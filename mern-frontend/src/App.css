@@ -1,0 +1,44 @@
+.App {
+  text-align: center;
+}
+
+/* user delete button from Admin page*/
+.deleteIcon {
+  cursor: pointer;
+  font-size: 2rem;
+  margin: 5px 5px 0 0;
+  color: crimson;
+  transition: 0.1s;
+}
+
+.deleteIcon:hover{
+  margin: 0px;
+  font-size: 3rem;
+  color: white;
+  border: 1px solid crimson;
+  border-radius: 50%;
+  background-color: crimson;
+  box-shadow: 0 0 10px 2px red;
+  padding: 10px;
+}
+
+/* highlight class styles for searched keywords on Notes */
+.highlight {
+  color: navy;
+  background-color: greenyellow;
+  border-radius: 8px;
+  margin: 0px 0px;
+  padding: 0px 3px;
+}
+
+/* users profile picture */
+.dbUserPic {
+  width: 200px;
+  height: 200px;
+  border: 2px solid whitesmoke;
+  border-radius: 50% 50%;
+  box-shadow: 0 0 10px 2px gray;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
