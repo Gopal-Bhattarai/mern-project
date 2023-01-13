@@ -76,8 +76,9 @@ const registerUser = expressAsyncHandler(async (req, res) => {
 //Email verification check on link with "key" parameter
 const emailVerificationUser = expressAsyncHandler(async (req,res)=>{
   const token = req.query.key;
+  console.log(token);
   if(!token) {
-    return res.status(401).json({Error: 'Access Denied on this resource'}) 
+    return res.status(401).json({Error: 'Access Denied on this resource, no token'}) 
   } else {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -87,10 +88,10 @@ const emailVerificationUser = expressAsyncHandler(async (req,res)=>{
       user.save();
       const authtoken = generateToken(user);
       res.status(200).json({ status: 'Login successful', authtoken, user})
-      res.redirect(CLIENT_URL);
+      res.redirect(`${CLIENT_URL}`);
       // res.status(200).json({Success: `Your email is verified, Click <a href='http://localhost:3000/login'>here</a> to login`, email: user.email })
     } catch (error) {
-        return res.status(401).json({Error: 'Access Denied on this resource'})
+        return res.status(401).json({Error: 'Access Denied on this resource, other'})
     }
   }
 })
@@ -99,7 +100,7 @@ const emailVerificationUser = expressAsyncHandler(async (req,res)=>{
 const emailVerificationUserLink = expressAsyncHandler(async (req,res)=>{
   const token = req.query.key;
   if(!token) {
-    return res.status(401).json({Error: 'Access Denied on this resource'}) 
+    return res.status(401).json({Error: 'Access Denied on this resource, no token'}) 
   } else {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -110,7 +111,7 @@ const emailVerificationUserLink = expressAsyncHandler(async (req,res)=>{
       res.redirect(CLIENT_URL);
       // res.status(200).json({Success: `Your email is verified, Click <a href='http://localhost:3000/login'>here</a> to login`, email: user.email })
     } catch (error) {
-        return res.status(401).json({Error: 'Access Denied on this resource'})
+        return res.status(401).json({Error: 'Access Denied on this resource, internal error'})
     }
   }
 })

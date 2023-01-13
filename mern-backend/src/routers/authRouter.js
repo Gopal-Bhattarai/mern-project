@@ -1,9 +1,12 @@
 import express from "express";
 import passport from "passport";
+import dotenv from 'dotenv'
 import {passportLoginSuccess, passportLoginFailed,
     passportLogout} from '../controllers/authController.js'
 
 const AuthRouter = express.Router();
+
+dotenv.config();
 const CLIENT_URL = process.env.CLIENT_URL;
 
 AuthRouter.get("/login/success", passportLoginSuccess);
