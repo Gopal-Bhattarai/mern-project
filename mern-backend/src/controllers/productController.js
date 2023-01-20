@@ -63,11 +63,11 @@ const getProducts = expressAsyncHandler(async(req, res)=>{
 //showing products to public users without authentication with limit to 6 and 1 page
 const get = expressAsyncHandler(async(req, res)=>{
     try {
-        const {page=1, limit=6} = req.query; 
+        const {page=1, limit=10} = req.query; 
         const count = await Product.countDocuments({ });
         const product = await Product.find({ }).limit(limit*1).skip((page-1)*limit).sort({ createdAt: -1 });
 
-        res.json({success: true, totalResults: count, products: product});
+        res.json({product});
     } catch (error) {
         console.log(`Error: ${error.message}`);
         res.status(403).send(error.message);
@@ -77,6 +77,18 @@ const get = expressAsyncHandler(async(req, res)=>{
 const getProduct = expressAsyncHandler(async(req, res)=>{
     try {
         const product = await Product.findOne({_id: req.params.id, user: req.user.id});
+        // const product = await Product.findOne({_id: req.params.id});
+        res.json(product);
+    } catch (error) {
+        console.log(`Error: ${error.message}`);
+        res.status(403).send(error.message);
+    }
+});
+
+const getPublicProduct = expressAsyncHandler(async(req, res)=>{
+    try {
+        // const product = await Product.findOne({_id: req.params.id, user: req.user.id});
+        const product = await Product.findOne({_id: req.params.id});
         res.json(product);
     } catch (error) {
         console.log(`Error: ${error.message}`);
@@ -182,5 +194,5 @@ const makeDefaultImage = expressAsyncHandler(async (req,res)=>{
 });
 
 export {
-    get, addProduct, getProduct, getProducts, updateProduct, deleteProduct, uploadImages, getImages, deleteImages, makeDefaultImage
+    get, addProduct, getProduct, getProducts,getPublicProduct, updateProduct, deleteProduct, uploadImages, getImages, deleteImages, makeDefaultImage
 }

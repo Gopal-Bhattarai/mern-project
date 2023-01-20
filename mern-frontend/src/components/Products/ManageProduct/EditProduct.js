@@ -3,12 +3,15 @@ import { useForm } from "@mantine/form";
 import { useContext, useState } from "react"
 import ProductContext from "../../Context/Product/ProductContext";
 import ProductImageUpload from "./ProductImageUpload";
+import RichTextEditorDEMO from "./RichTextEditor";
 
 const EditProduct = ({productModify : product, cancelEdit}) => {
 
     const urlHost = process.env.REACT_APP_HOST;
     const {products, setProducts} = useContext(ProductContext)
     const [loading, setLoading] = useState(false)
+    const [desc, setDesc] = useState('')
+
 
     const form = useForm({
 
@@ -21,9 +24,14 @@ const EditProduct = ({productModify : product, cancelEdit}) => {
         },
     })
 
+    const text = (val) => {
+        setDesc(val)
+      }
+
     const handleClick = async (e) =>{
         // e.preventDefault();
         setLoading(true);
+        const newObj = ({...e, description: desc})
 
         //update in database
         const response = await fetch(`${urlHost}/api/products/updateproduct/${product._id}`,{
@@ -32,7 +40,7 @@ const EditProduct = ({productModify : product, cancelEdit}) => {
                 "Content-Type" : "application/json",
                 "auth-token" : localStorage.getItem('token')
             },
-            body: JSON.stringify({...e})
+            body: JSON.stringify({...newObj})
         })
         await response.json();
         setProducts(products.map(p=>p._id===e._id ? ({...p, ...e}) : p))
@@ -73,8 +81,7 @@ const EditProduct = ({productModify : product, cancelEdit}) => {
             <TextInput label="Quantity in Stock" placeholder='Quantity in Stock...'
             {...form.getInputProps('quantityInStock')} />
 
-            <TextInput label="Description" placeholder='Description...'
-            {...form.getInputProps('description')} />
+            
 
             <TextInput withAsterisk label="SKU" placeholder='SKU...'
             {...form.getInputProps('sku')} />
@@ -92,6 +99,9 @@ const EditProduct = ({productModify : product, cancelEdit}) => {
             <Card shadow="md">
                 <ProductImageUpload productid={product._id} productImages={product.image} productAvatar={product.avatar} />
             </Card>
+            {/* <TextInput label="Description" placeholder='Description...'
+            {...form.getInputProps('description')} /> */}
+            <RichTextEditorDEMO text={(e)=>text(e)} />
         </Box>
     </SimpleGrid>
     }

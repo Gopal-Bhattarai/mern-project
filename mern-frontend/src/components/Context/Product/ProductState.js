@@ -17,6 +17,14 @@ const ProductState = (props) => {
         setProducts(json)
     };
 
+    const getPublicProducts = async (page) =>{
+        const response = await fetch(`${urlHost}/api/products/public?page=${page}`,{
+            method: 'GET',
+        })
+        const json = await response.json();
+        setProducts(json.product)
+    };
+
     const getProduct = async (productid) => {
         const response = await fetch(`${urlHost}/api/products/getproduct/${productid}`,{
             method: 'GET',
@@ -30,7 +38,7 @@ const ProductState = (props) => {
 
     return (
         <div>
-            <ProductContext.Provider value={{product, setProduct, getProduct, products, setProducts, getProducts}}>
+            <ProductContext.Provider value={{product, setProduct, getProduct, getPublicProducts, products, setProducts, getProducts}}>
                 {props.children}
             </ProductContext.Provider>
         </div>

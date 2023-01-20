@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 import bcrypt from 'bcryptjs';
 
 const userSchema = mongoose.Schema(
@@ -40,11 +41,17 @@ const userSchema = mongoose.Schema(
     isActive: {
       type: Boolean,
     },
+    deletedAt: {
+      type: Date,
+      default: null
+    }
   },
   {
     timestamps: true,
-  }
+  },
+ 
 );
+
 
 //password hash before saving in DB
 userSchema.pre('save', function(next){

@@ -9,27 +9,72 @@ sgMail.setApiKey(process.env.SGMAIL_API);
 
 //List out all users from Users collection
 const getAllUsers = expressAsyncHandler(async (req,res) => {
-try {
-  const users = await User.find ({}).select('-password')
-  res.status(200).json({users})
-} catch (error) {
-    console.log(error.message);
-    res.status(500).json({ status: 'Internal Server Error'})
-}
-});
-
-//delete a user
-const deleteUser = expressAsyncHandler(async (req, res)=>{
+  try {
+    const users = await User.find ({ deletedAt: null})
+    const count = users.length;
+    res.status(200).json({users: {rows: users, count: count}})
+  } catch (error) {
+      console.log(error.message);
+      res.status(500).json({ status: 'Internal Server Error'})
+  }
+  });
+  
+  //List out all users from Users collection
+  const getAllDeletedUsers = expressAsyncHandler(async (req,res) => {
+    try {
+      const users = await User.find ({ deletedAt : {$ne: null} })
+      const count = users.length;
+      res.status(200).json({users: {rows: users, count: count}})
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ status: 'Error: No deleted data found'})
+    }
+    });
+  
+  //Soft delete a user
+  const deleteUser = expressAsyncHandler(async (req, res)=>{
+      const id = req.params.id;
+      console.log(id);
+      try {
+        const user = await User.findOne({_id: id});
+        user.deletedAt = Date.now()
+        user.isActive = false
+        user.save();
+        res.status(200).send({ status: "User deleted!", user });
+      } catch (err) {
+        console.log(err, ">>>>>>>>>>>> error");
+        res.status(400).send({ status: "error deleting user data!" });
+      }
+  });
+  
+  //hard delete
+  const deleteForceUser = expressAsyncHandler(async (req, res)=>{
     const id = req.params.id;
     console.log(id);
     try {
-      const user = await User.findByIdAndDelete({ _id: id, role: 'User' });
-      res.status(200).send({ status: "User deleted!", user });
+      const user = await User.remove({_id: id});
+      res.status(200).send({ status: "User permanently deleted!", user });
     } catch (err) {
       console.log(err, ">>>>>>>>>>>> error");
       res.status(400).send({ status: "error deleting user data!" });
     }
-});
+  });
+  
+  //restore softdeleted user
+  const restoreUser = expressAsyncHandler(async (req, res)=>{
+    const id = req.params.id;
+    console.log(id);
+    try {
+      const user = await User.findOne({_id: id});
+        user.deletedAt = null
+        user.isActive = true
+        user.save();
+      res.status(200).send({ status: "User restored", user });
+    } catch (err) {
+      console.log(err, ">>>>>>>>>>>> error");
+      res.status(400).send({ status: "error deleting user data!" });
+    }
+  });
 
 //role change from User to Admin
 const changeRole = expressAsyncHandler (async (req, res) => {
@@ -77,4 +122,4 @@ const changeIsActive = expressAsyncHandler(async (req, res)=>{
       }
 })
 
-export {getAllUsers, deleteUser, changeRole, changeIsActive, resetPassword}
+export {getAllUsers, getAllDeletedUsers, deleteUser, deleteForceUser, restoreUser, changeRole, changeIsActive, resetPassword}

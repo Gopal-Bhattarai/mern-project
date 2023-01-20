@@ -5,3 +5,6 @@ mern-backend/.env
 mern-frontend/node_modules
 mern-frontend/build
 mern-frontend/.env
+
+mern-shopping-site
+server

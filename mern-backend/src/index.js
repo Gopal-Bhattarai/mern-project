@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import cookieSession from "cookie-session";
 import passport from "passport";
+import chalk from "chalk";
 import ('./passport.js')
 import apiRouter from "./config/apiRouter.js";
 
@@ -51,7 +52,7 @@ dbConnection();
 //Initializing server to listen on given port
 app.listen(
   process.env.PORT,
-  console.log(`app is running on : ${process.env.PORT}`)
+  console.log(chalk.hex('#FFA500')(`app is running on : ${process.env.PORT}`))
 );
 
 

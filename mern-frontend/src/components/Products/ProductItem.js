@@ -1,8 +1,7 @@
-import { useContext, useEffect } from 'react';
-import { UserContext } from '../Context/UserContext'
+import { useContext } from 'react';
 import ProductContext from "../Context/Product/ProductContext";
 import noImage from '../img/noImage.png'
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Badge, Button, Card, Group, Image,  List, SimpleGrid, Text, ThemeIcon } from '@mantine/core';
 import { IconCheck, IconCircleCheck } from '@tabler/icons';
 import { DeleteProductAPI } from '../../APIs/Product/DeleteProduct';
@@ -12,22 +11,13 @@ import { cardVariant } from "../motion/ProductMotion";
 
 
 
-const ProductItem = ({product, handleEdit}) => {
+const ProductItem = ({product, handleEdit, user}) => {
     const urlHost = process.env.REACT_APP_HOST;
     const {products, setProducts} = useContext(ProductContext)
-    const {getUser, user} = useContext(UserContext)
-    //const userid = localStorage.getItem('userid');
-    const folder = `${urlHost}/images/${user._id}/${product._id}`;
-    const navigate = useNavigate();
+    const folder = `${urlHost}/images/${product._id}`;
     
 
     const MoCard = motion(Card)
-
-    useEffect(()=>{
-      localStorage.getItem('token') ? getUser() : navigate("/")
-      // setUserid(user._id)
-        //eslint-disable-next-line
-    },[])
 
     const handleDelete = async (id) => {
       DeleteProductAPI(id)
@@ -36,7 +26,6 @@ const ProductItem = ({product, handleEdit}) => {
         notify({title: 'Great', message: "Product Deleted", icon: <IconCheck /> })        
       }).catch (error => console.log(error))
     }
-    
   return (
       <MoCard shadow="md" m="sm" radius="md" withBorder 
           variants = {cardVariant} 
@@ -52,7 +41,7 @@ const ProductItem = ({product, handleEdit}) => {
           </Badge>
         </Group>
 
-        <Text size="sm" color="dimmed" style={{ height: 60 }}>{product.description}</Text>
+        {/* <Text size="sm" color="dimmed" style={{ height: 60 }}><div dangerouslySetInnerHTML={{__html: product.description}} /></Text> */}
 
         <List mt="md" spacing="xs" size="sm" center icon={
             <ThemeIcon color="teal" size={24} radius="xl">
@@ -61,13 +50,14 @@ const ProductItem = ({product, handleEdit}) => {
             <List.Item> Qty: {product.quantityInStock}</List.Item>
             <List.Item> Category: {product.category}</List.Item>
             <List.Item> SKU: {product.sku}</List.Item>
+            <List.Item> Seller: {product.user}</List.Item>
         </List>
 
         <Card.Section inheritPadding mt="sm" pb="md" style={{ height: 100 }}>
           <SimpleGrid cols={3}>
             {user._id && product.image.map((image, i) => (
               i<=2 ?
-              <Image src={`${folder}/${image}`} key={image} radius="sm"/>
+              <Image src={`${folder}/${image}`} key={i} radius="sm"/>
               : null
             ))} 
           </SimpleGrid>

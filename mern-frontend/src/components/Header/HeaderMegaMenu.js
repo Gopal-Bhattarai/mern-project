@@ -10,6 +10,8 @@ import { ColorScheme } from './ColorScheme';
 import { IconBuildingStore, IconHome, IconLogin, IconLogout, IconUserPlus, IconUsers } from '@tabler/icons';
 import { useContext } from 'react';
 import { UserContext } from '../Context/UserContext';
+import { TiShoppingCart } from 'react-icons/ti';
+import { ShoppingCartContext } from '../Context/ShopingCartContext';
   
   const useStyles = createStyles((theme) => ({
     link: {
@@ -78,6 +80,7 @@ import { UserContext } from '../Context/UserContext';
     const { classes, theme } = useStyles();
 
     const { count } = useContext(UserContext);
+    const {cart} = useContext(ShoppingCartContext)
 
     const handleSignOut = () => {
       localStorage.removeItem('token');
@@ -125,10 +128,9 @@ import { UserContext } from '../Context/UserContext';
                   {/* <Tooltip label="Sign out to protect your data">
                     <Button radius="xl" variant="gradient" gradient={{ from: 'orange', to: 'red' }} onClick={handleSignOut}> &nbsp;Log out</Button>
                   </Tooltip> */}
-                    <ActionIcon variant="outline" onClick={handleSignOut} title="Sign out to protect your privacy" >
+                    <ActionIcon variant="outline" mx="sm" onClick={handleSignOut} title="Sign out to protect your privacy" >
                       <IconLogout />
                     </ActionIcon>
-                  <ColorScheme />
                 </Group>
                 </> 
               ) 
@@ -136,11 +138,18 @@ import { UserContext } from '../Context/UserContext';
               <>
                 <Group className={classes.hiddenMobile}>
                   <Link to="/login"><Button variant="gradient" gradient={{ from: 'indigo', to: 'cyan' }}><IconLogin /> Log in</Button></Link>
-                  <Link to="/signup"><Button variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}><IconUserPlus /> Sign up</Button></Link>
-                  <ColorScheme />
+                  <Link to="/signup"><Button mr="xs" variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}><IconUserPlus /> Sign up</Button></Link>
                 </Group>
               </>
             ) }
+                <Group >
+                  <Indicator label={cart.total_item} showZero={false} dot={false} inline size={16} >
+                    <ActionIcon component={Link} to = "/cart" variant='outline' radius="lg">
+                        <TiShoppingCart />
+                    </ActionIcon>
+                  </Indicator>
+                  <ColorScheme />
+                </Group>
             </Group>
 
             <Burger opened={drawerOpened} onClick={toggleDrawer} className={classes.hiddenDesktop} />

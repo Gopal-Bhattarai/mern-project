@@ -1,11 +1,11 @@
 import { Card, Container, Flex, Title, Badge, Text, Box, 
     SimpleGrid, Switch, Tooltip,  Indicator, Center, Button, 
     Dialog, Group, Chip, Paper } from "@mantine/core";
-import { IconBrandGithub, IconChecks, IconReplace, IconUserX, IconX } from "@tabler/icons";
+import { IconBrandGithub, IconCheck, IconChecks, IconReplace, IconUserX, IconX } from "@tabler/icons";
 import axios from "axios"
 import { useEffect, useState } from "react";
 import AdminResetPassword from "./AdminResetPassword";
-import {FcGoogle} from 'react-icons/fc'
+import {FcEmptyTrash, FcFullTrash, FcGoogle} from 'react-icons/fc'
 import {FiHardDrive} from 'react-icons/fi'
 import { showNotification as notify } from "@mantine/notifications";
 
@@ -18,18 +18,22 @@ const ManageUser = () => {
         user: '',
         action: ''
     });
+    const [usersList, setUsersList] = useState(true)
+    const [count, setCount] = useState(0)
 
-    const getData = async () => {
-
+    const getActiveUsersList = async () => {
         try {
-            const response = await axios.get(`${urlHost}/api/admin/users`)
-            setUsers(response.data.users)
+            const response = await axios.get(`${urlHost}/api/admin/users/${usersList}`)
+            console.log(response.data.users);
+            response.data.users.count ? setCount(response.data.users.count) : setCount(0)
+            setUsers(response.data.users.rows)
         } catch (error) {
-            
             notify({title: 'Oooops', message: `Unable to fetch user data`, color:'red', icon: <IconX /> })
             console.log(error.message);
         }
     }
+
+    
 
     const handleDelete = async(delUser) => {
         setOpened({
@@ -42,7 +46,10 @@ const ManageUser = () => {
             return;
         } 
         try {
-            const response = await axios.delete(`${urlHost}/api/admin/users/delete/${delUser._id}`)
+            let response = 0;
+            opened.action==='delete' ? 
+            response = await axios.delete(`${urlHost}/api/admin/users/delete/${delUser._id}`) :
+            response = await axios.delete(`${urlHost}/api/admin/users/delete/force/${delUser._id}`)
             setUsers(users.filter(user=>user._id!==delUser._id))
             notify({title: 'Success', message: response.data.status, icon: <IconChecks /> })
         } catch (error) {
@@ -84,12 +91,24 @@ const ManageUser = () => {
     const handleAction =() => {
         setOpened({status: false, user: '', action: ''})
     }
+
+    const handleRestoreUser = async () =>{
+        try {
+            await axios.get(`${urlHost}/api/admin/users/restore/${opened.user._id}`)
+            setUsersList(true)
+            notify({title: 'Success', message: 'User Restored', icon: <IconCheck /> })
+        } catch (error) {
+            notify({title: 'Oooops', message: `Unable to fetch user data`, color:'red', icon: <IconX /> })
+            console.log(error.message);
+        }
+        handleAction();
+    }
         
 
     useEffect(()=> {
-        getData();
+        getActiveUsersList();
         // eslint-disable-next-line
-    },[])
+    },[usersList])
         
    return (
     <Container mt="sm" size="lg">
@@ -105,7 +124,7 @@ const ManageUser = () => {
             })}
             size="lg"
         >
-        { opened.action==='delete' ? 
+        { opened.action==='delete' || opened.action ==='forcedelete' ? 
         (
             <>
             <Text size="sm" style={{ marginBottom: 10 }} weight={500}>
@@ -117,11 +136,15 @@ const ManageUser = () => {
                 <Button onClick={() => setOpened({status: false, user:'', action:''})}>Cancel</Button>
             </Group>
             </>
-        ) : ( <AdminResetPassword user={opened.user} action={handleAction} /> ) }
+        ) : 
+        opened.action==='restore' ?
+        handleRestoreUser()
+        : ( <AdminResetPassword user={opened.user} action={handleAction} /> ) }
         </Dialog>
 
         <Title mb="sm" order={2}>
             Manage Users
+            <Chip checked={!usersList} onClick={()=>setUsersList(!usersList) }> {count>0 ? (<><FcFullTrash /> Trash</>) : (<><FcEmptyTrash /> Trash is Empty, Click to go back</>) } </Chip>
         </Title>
 
     {users && users.map(user=>(
@@ -161,12 +184,27 @@ const ManageUser = () => {
                     </Tooltip>
                     <Flex wrap="wrap" gap="sm">
 
+                        {usersList ?
+                        <>
+
                         <Tooltip label="Delete this user">
-                            <Button disabled={user.role==='admin' || user.email===currentUserEmail} size="xs" variant="outline" color="red" onClick={()=>setOpened({status:true, user: user, action:'delete'})}><IconUserX />Delete User</Button> 
-                        </Tooltip>
+                                <Button disabled={user.role==='admin' || user.email===currentUserEmail} size="xs" variant="outline" color="red" onClick={()=>setOpened({status:true, user: user, action:'delete'})}><IconUserX />Delete User</Button> 
+                        </Tooltip> 
                         <Tooltip label="Reset Password">
-                            <Button size="xs" variant="outline" onClick={()=>setOpened({status:true, user: user, action:'resetpassword'})}><IconReplace />Reset Password</Button>
+                                <Button size="xs" variant="outline" onClick={()=>setOpened({status:true, user: user, action:'resetpassword'})}><IconReplace />Reset Password</Button>
                         </Tooltip>
+                        </> :
+                        <>
+                        <Tooltip label="Restore back this user">
+                                 <Button disabled={user.role==='admin' || user.email===currentUserEmail} size="xs" variant="outline" onClick={()=>setOpened({status:true, user: user, action:'restore'})}><IconCheck />Restore User</Button>
+                        </Tooltip>
+                        <Tooltip label="Permanently delete">
+                            <Button disabled={user.role==='admin' || user.email===currentUserEmail} size="xs" variant="outline" color="red" onClick={()=>setOpened({status:true, user: user, action:'forcedelete'})}><IconX />Delete Completely</Button>
+                        </Tooltip>
+                        </>
+                        }
+
+
 
                     </Flex>
                 </Flex>

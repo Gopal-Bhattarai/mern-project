@@ -12,8 +12,7 @@ const ProductImageUpload = ({productid, productImages, productAvatar, defaultIma
     const postImagesURL = `${urlHost}/api/products/images/${productid}`;
     const [images, setImages] = useState(productImages);
     const [isUploading, setIsUploading] = useState(false);
-    const userid = localStorage.getItem('userid');
-    const folder = `${urlHost}/images/${userid}/${productid}`;
+    const folder = `${urlHost}/images/${productid}`;
 
     const deleteProductImage = async (arrayIndex, imgName) => {
         setIsUploading(true)
@@ -68,6 +67,9 @@ const ProductImageUpload = ({productid, productImages, productAvatar, defaultIma
             formData.append("imageList", image, e.name) 
             setImages(images=>[...images, e.name])  
 
+            
+        })
+        setTimeout(async () => {
             const response = await fetch(postImagesURL, {
                 method: 'POST',
                 headers: {
@@ -76,12 +78,10 @@ const ProductImageUpload = ({productid, productImages, productAvatar, defaultIma
                 body: formData
             })
             await response.json();
-        })
-
+            setIsUploading(false)
+            makeDefaultPicture(0); //making 0th image an Avatar
+        }, 1500);
         
-        setIsUploading(false)
-
-        makeDefaultPicture(0); //making 0th image an Avatar
          
     }
 

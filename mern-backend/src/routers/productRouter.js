@@ -1,6 +1,6 @@
 import express from 'express';
 import isAuthenticated from '../middleware/Authentication.js';
-import {addProduct, getProduct, getProducts, updateProduct, get, 
+import {addProduct, getProduct, getProducts, updateProduct, get, getPublicProduct,
     deleteProduct, uploadImages, makeDefaultImage, deleteImages, getImages} from '../controllers/productController.js'
 const productRouter = express.Router();
 import multiple from '../middleware/UploadFiles.js';
@@ -8,7 +8,8 @@ import multiple from '../middleware/UploadFiles.js';
 productRouter.use(express.json());
 
 //showing products to public users without authentication
-productRouter.get("/", get);
+productRouter.get("/public/", get);
+productRouter.get("/public/:id", getPublicProduct);
 
 //Route to fetch single products for corresponding user: Login required
 productRouter.get('/getProduct/:id', isAuthenticated, getProduct)

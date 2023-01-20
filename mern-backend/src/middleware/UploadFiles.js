@@ -7,13 +7,9 @@ const storage = multer.diskStorage({
     destination: (req,file,cb) => {
         const __dirname = path.resolve();
         const productid = req.params.id;
-        const userdir = __dirname + '/public/products/' + req.user._id;
-        const productdir = __dirname + '/public/products/' + req.user._id + '/' + productid;
+        const productdir = __dirname + '/public/products/' + productid;
         //req.avatarname=file.originalname;
-        
-         if(!fs.existsSync(userdir)) {
-             fs.mkdirSync(userdir);
-         }
+
          if(!fs.existsSync(productdir)) {
             fs.mkdirSync(productdir);
         }

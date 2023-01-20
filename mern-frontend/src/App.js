@@ -21,6 +21,10 @@ import { PassportLoginGetAPI } from './APIs/PassportLoginGetAPI';
 import UserState from './components/Context/UserContext';
 import Products from './components/Products/Products';
 import Contact from './components/Contact';
+import Store from './pages/Store';
+import ProductState from './components/Context/Product/ProductState';
+import  ShoppingCartState  from './components/Context/ShopingCartContext';
+import Cart from './pages/Cart';
 
 function App() {
   const [colorScheme, setColorScheme] = useLocalStorage({key: 'color-scheme', defaultValue: 'light'});
@@ -69,12 +73,16 @@ return (
 
 <Router>
   <UserState>
+    <ShoppingCartState>
+    <ProductState>
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
       <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
         <NotificationsProvider position='top-right' autoClose={2500}>
             <HeaderMegaMenu user={user} />
           <Routes>
-            <Route exact path="/" element = {user ? <Home /> : <Navigate to="/login" />} />
+            <Route exact path="/" element = {user ? <Home /> : <Navigate to="/store" />} />
+            <Route exact path ="/store" element={<Store />} />
+            <Route exact path ="/cart" element={<Cart />} />
             <Route exact path="/login" element ={user ? <Navigate to="/" /> : <Login userState={(user)=>setUser(user)}/>} />
             <Route exact path="/signup" element ={<Signup />} />
             <Route exact path="/emailverification" element ={<EmailVerification />} />
@@ -89,6 +97,8 @@ return (
         </NotificationsProvider>
       </MantineProvider>
     </ColorSchemeProvider>
+    </ProductState>
+    </ShoppingCartState>
   </UserState>
 </Router>
 </>

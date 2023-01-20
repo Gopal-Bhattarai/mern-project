@@ -25,7 +25,7 @@ const ChartUsers = ({type}) => {
         .then((response)=>{
             setLabels([]);
             setValues([]);
-            const result = groupBy(response.data.users, 'provider');
+            const result = groupBy(response.data.users.rows, 'provider');
             Object.entries(result).forEach(([key,value])=>{
                 //console.log(key, '--', value.length);
                 setLabels(current=>[...current, key])
@@ -63,7 +63,7 @@ const ChartUsers = ({type}) => {
                 }
             },
             fill: {
-                colors: ['#7CFC00']
+                colors: ['#FFA500']
             }
           },
           series: [{

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import chalk from 'chalk'
 
 const dbConnection = async () => {
     try {
@@ -7,7 +8,8 @@ const dbConnection = async () => {
         useNewUrlParser: true,
         useCreateIndex: true,
       });
-      console.log(`MongoDB Connected: ${conn.connection.host}`);
+      // console.log(chalk.blue.bgGreen.bold(`MongoDB Connected at`), chalk.white.bgGreen.bold(`(${conn.connection.host}`));
+      console.log(chalk.whiteBright.bgGreen.bold(`MongoDB Connected at - (${conn.connection.host}`));
     } catch (error) {
       console.error(`Error: ${error.message}`);
       process.exit(1);

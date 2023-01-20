@@ -5,10 +5,12 @@ import { AddProductAPI } from '../../../APIs/Product/AddProduct'
 import { IconCheck, IconX } from '@tabler/icons'
 import { showNotification as notify } from '@mantine/notifications'
 import ProductImageUpload from './ProductImageUpload'
+import RichTextEditorDEMO from './RichTextEditor'
 
 const AddProduct = () => {
     const [loading, setLoading] = useState(false)
     const [product, setProduct] = useState({})
+    const [desc, setDesc] = useState('')
 
     const form = useForm({
 
@@ -34,10 +36,16 @@ const AddProduct = () => {
         },
     })
 
+    const text = (val) => {
+      setDesc(val)
+    }
+
     const handleSubmit = (values) => {
         
         setLoading(true);
-        AddProductAPI(values)
+        const newObj = ({...values, description: desc})
+        // console.log(newObj);
+        AddProductAPI(newObj)
         .then(response=>{
             console.log(response.data);
             setProduct(response.data);
@@ -75,11 +83,13 @@ const AddProduct = () => {
         <TextInput label="Quantity in Stock" placeholder='Quantity in Stock...'
         {...form.getInputProps('quantityInStock')} />
 
-        <TextInput label="Description" placeholder='Description...'
-        {...form.getInputProps('description')} />
+        {/* <TextInput label="Description" placeholder='Description...'
+        {...form.getInputProps('description')} /> */}
 
         <TextInput withAsterisk label="SKU" placeholder='SKU...'
         {...form.getInputProps('sku')} />
+
+        <RichTextEditorDEMO text={(e)=>text(e)} />
 
         </Group>
         <Button my="md" type='submit' loading={loading}>Add New</Button>
