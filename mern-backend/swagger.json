@@ -1,0 +1,70 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0", 
+      "title": "Shopping API",
+      "description": "Project Shopping site backend API ",
+      "license": {
+        "name": "Gopal Bhattarai",
+        "url": "http://localhost:3000"
+      }
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "tags": [
+      {
+        "name": "Users",
+        "description": "API for users in the system"
+      }
+    ],
+        "paths": {
+          "/api/users/login": {
+            "post": {
+              "tags": ["Users"],
+              "summary": "Login into system",
+              "requestBody": [
+                {
+                    "properties": {
+
+                        "name": "email",
+                        "description": "gbhattarai55@gmail.com",
+                        "schema": {
+                            "$ref": "#/definitions/Users"
+                        }
+                  }
+                }
+              ],
+              "produces": ["application/json"],
+              "responses": {
+                "200": {
+                  "description": "OK",
+                  "schema": {
+                    "$ref": "#/definitions/Users"
+                  }
+                }
+              }
+            }
+          }
+        },
+
+        "definitions": {
+          "Users": {
+            "required": ["email", "password"],
+            "properties": {
+              "email": {
+                "type": "string",
+                "required": true,
+                "unique": true
+              },
+              "password": {
+                "type": "string",
+                "required": true
+              }
+            }
+          }
+        },
+    "schemes": ["http"],
+    "consumes": ["application/json"],
+    "produces": ["application/json"]
+  }
+  

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "nodemon src/index.js",
-    "start" :"node src/index.js"
+    "start": "node src/index.js"
   },
   "repository": {
     "type": "git",
@@ -54,6 +54,9 @@
     "passport-google-oauth20": "^2.0.0",
     "sharp": "^0.31.3",
     "socket.io": "^4.5.3",
-    "socket.io-client": "^2.1.1"
+    "socket.io-client": "^2.1.1",
+    "swagger-jsdoc": "^6.0.0",
+    "swagger-ui-express": "^4.1.6",
+    "yamljs": "^0.3.0"
   }
 }

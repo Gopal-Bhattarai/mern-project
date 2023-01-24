@@ -7,7 +7,10 @@ import cookieSession from "cookie-session";
 import passport from "passport";
 import chalk from "chalk";
 import ('./passport.js')
-import apiRouter from "./config/apiRouter.js";
+import apiRouter from "./apiRouter.js";
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUi from 'swagger-ui-express'
+import swaggerDocument from '../swagger.json' assert { type: "json" }
 
 dotenv.config();
 const app = express();
@@ -38,7 +41,28 @@ app.use(
 app.use('/avatar', express.static('public/avatar'))
 app.use('/images', express.static('public/products'))
 
-//defaul root route to check if server is serving or not
+//Swagger
+// const options={
+//   definition: {
+//     openapi: '3.0.0',
+//     info: {
+//       title: 'API Docs for Shopping site',
+//       version: '1.0.0',
+//     },
+//     servers: [{url: 'http://localhost:8080/'}]
+//   },
+//   apis: ['./apiRouter.js']
+// }
+// const swaggerSpec = swaggerJSDoc(options)
+
+// app.get('docs.json', (req, res)=>{
+//   res.setHeader('Content-Type', 'application/json')
+//   res.send(swaggerSpec)
+// })
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+
+
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
