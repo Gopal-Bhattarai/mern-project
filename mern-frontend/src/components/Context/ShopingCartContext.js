@@ -4,13 +4,21 @@ export const ShoppingCartContext = createContext();
 
 //localstorage check
 const getLocalCartData = () =>{
-    const localCartData = localStorage.getItem('GBTechCart')
-    // localCartData === [] ? [] : JSON.parse(localCartData)
-    if(localCartData===[]){
-        return [];
+
+    // let localCartData
+    if(localStorage.getItem('GBTechCart')){
+        return JSON.parse(localStorage.getItem('GBTechCart'))
     } else {
-        return JSON.parse(localCartData)
+        return [];
     }
+     
+   
+    // localCartData === [] ? [] : JSON.parse(localCartData)
+    // if(localCartData===[]){
+    //     return [];
+    // } else {
+    //     return JSON.parse(localCartData)
+    // }
 }
 
 const initialState = {
@@ -55,11 +63,14 @@ const ShoppingCartState = (props) => {
                     cart: []
                 }
             case 'UPDATE_ITEM_COUNT':
-                const total_item = 
-                    state.cart.reduce((initialVal, curElem)=>{
-                        initialVal = initialVal + curElem.qty;
-                        return initialVal;
-                        },0)
+                let total_item = 0;
+                state.cart && state.cart.length >0 ?
+                    total_item = 
+                        state.cart.reduce((initialVal, curElem)=>{
+                            initialVal = initialVal + curElem.qty;
+                            return initialVal;
+                            },0)
+                    : void 0
 
                 return {
                     ...state,
@@ -67,11 +78,14 @@ const ShoppingCartState = (props) => {
                 }
             
             case 'UPDATE_TOTAL_COST':
-                const total_price = 
+                let total_price = 0;
+                state.cart && state.cart.length >0 ?
+                    total_price = 
                     state.cart.reduce((initialVal, curElem)=>{
                         initialVal = initialVal + (curElem.qty*curElem.price);
                         return initialVal;
                         },0)
+                    : void 0
 
                 return {
                     ...state,

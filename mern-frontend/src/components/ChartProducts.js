@@ -21,7 +21,7 @@ const ChartProducts = ({type}) => {
     }
     
     const getData=()=>{
-        axios('http://localhost:8080/api/products/getproducts',{
+        axios(`${process.env.REACT_APP_HOST}/api/products/getproducts`,{
             method: 'get',
             headers: {
                 "Content-Type" : "application-json",

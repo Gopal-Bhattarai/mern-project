@@ -7,9 +7,9 @@ import { IconX } from '@tabler/icons'
 const CartAmountToggle = ({product}) => {
 
     const {cart, dispatch} = useContext(ShoppingCartContext)
-        // let found = {}
+        let found = undefined
         
-        const found = cart.cart.find(each=>each._id===product._id)
+        cart.cart ? found = cart.cart.find(each=>each._id===product._id) : void 0
 
         const setIncrease = (product) =>{
             cart.cart.map(each=>each._id===product._id ? each.qty<5 ? 

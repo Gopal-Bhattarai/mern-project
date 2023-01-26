@@ -21,7 +21,7 @@ const ChartUsers = ({type}) => {
     }
     
     const getData=()=>{
-        axios('http://localhost:8080/api/admin/users')
+        axios(`${process.env.REACT_APP_HOST}/api/admin/users`)
         .then((response)=>{
             setLabels([]);
             setValues([]);
